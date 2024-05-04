@@ -1,9 +1,9 @@
 {
-	"name": "pl_order_raw_to_clean",
+	"name": "pl_structured_to_analytic",
 	"properties": {
 		"activities": [
 			{
-				"name": "RawToClean",
+				"name": "StructureToAnalytic",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "df_raw_to_clean",
+						"referenceName": "df_structured_to_analytic",
 						"type": "DataFlowReference"
 					},
 					"compute": {
@@ -27,8 +27,6 @@
 				}
 			}
 		],
-		"annotations": [],
-		"lastPublishTime": "2024-05-04T07:39:50Z"
-	},
-	"type": "Microsoft.DataFactory/factories/pipelines"
+		"annotations": []
+	}
 }

@@ -1,5 +1,5 @@
 {
-	"name": "df_order_clean_to_structured",
+	"name": "df_clean_to_structured",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {

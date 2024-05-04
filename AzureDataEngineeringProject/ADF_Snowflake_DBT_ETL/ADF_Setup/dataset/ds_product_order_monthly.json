@@ -1,0 +1,27 @@
+{
+	"name": "ds_product_order_monthly",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_dl_raw",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "4. Analytic"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "ds_product_order_monthly.csv",
+				"folderPath": "ds_product_order_monthly",
+				"fileSystem": "analytic"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
