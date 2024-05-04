@@ -404,7 +404,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Data flow1",
+						"name": "CleanToStructured",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -417,7 +417,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "df_order_clean_to_structured",
+								"referenceName": "df_clean_to_structured",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
@@ -446,7 +446,115 @@
 				"lastPublishTime": "2024-05-04T10:19:04Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/df_order_clean_to_structured')]"
+				"[concat(variables('factoryId'), '/dataflows/df_clean_to_structured')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_execute_all_pipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "landingToRaw",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_landing_to_raw",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "RawToClean",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "landingToRaw",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_order_raw_to_clean",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "cleanToStructured",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "RawToClean",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_clean_to_structured",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "StructuredToAnalytic",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "cleanToStructured",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_structured_to_analytic",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_landing_to_raw')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_order_raw_to_clean')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_clean_to_structured')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_structured_to_analytic')]"
 			]
 		},
 		{
@@ -750,7 +858,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "dataflowTranfromation",
+						"name": "RawToClean",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -763,7 +871,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "df_order_raw_to_clean",
+								"referenceName": "df_raw_to_clean",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
@@ -795,7 +903,56 @@
 				"lastPublishTime": "2024-05-04T07:39:50Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/df_order_raw_to_clean')]"
+				"[concat(variables('factoryId'), '/dataflows/df_raw_to_clean')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_structured_to_analytic')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "StructureToAnalytic",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_structured_to_analytic",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"structureOrder": {},
+									"structuredProduct": {},
+									"StructuredStore": {},
+									"dsproductordermonthly": {},
+									"dsstoreordermonthly": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/df_structured_to_analytic')]"
 			]
 		},
 		{
@@ -1414,6 +1571,38 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ds_product_order_monthly')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_dl_raw",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "4. Analytic"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "ds_product_order_monthly.csv",
+						"folderPath": "ds_product_order_monthly",
+						"fileSystem": "analytic"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_dl_raw')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_raw_customer')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1548,6 +1737,38 @@
 					}
 				},
 				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_dl_raw')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_store_order_monthly')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_dl_raw",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "4. Analytic"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "ds_store_order_monthly.csv",
+						"folderPath": "ds_store_order_monthly",
+						"fileSystem": "analytic"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_dl_raw')]"
@@ -1801,7 +2022,37 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/df_order_clean_to_structured')]",
+			"name": "[concat(parameters('factoryName'), '/test')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "pl_execute_all_pipeline",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 16,
+						"startTime": "2024-05-04T17:39:00",
+						"timeZone": "India Standard Time"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_execute_all_pipeline')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_clean_to_structured')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1970,7 +2221,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/df_order_raw_to_clean')]",
+			"name": "[concat(parameters('factoryName'), '/df_raw_to_clean')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -2283,6 +2534,161 @@
 				"[concat(variables('factoryId'), '/datasets/ds_clean_stores')]",
 				"[concat(variables('factoryId'), '/datasets/ds_clean_products')]",
 				"[concat(variables('factoryId'), '/datasets/ds_clean_customer')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_structured_to_analytic')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_struct_orders",
+								"type": "DatasetReference"
+							},
+							"name": "structureOrder"
+						},
+						{
+							"dataset": {
+								"referenceName": "ds_struct_products",
+								"type": "DatasetReference"
+							},
+							"name": "structuredProduct"
+						},
+						{
+							"dataset": {
+								"referenceName": "ds_struct_stores",
+								"type": "DatasetReference"
+							},
+							"name": "StructuredStore"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ds_product_order_monthly",
+								"type": "DatasetReference"
+							},
+							"name": "dsproductordermonthly"
+						},
+						{
+							"dataset": {
+								"referenceName": "ds_store_order_monthly",
+								"type": "DatasetReference"
+							},
+							"name": "dsstoreordermonthly"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Monthyear"
+						},
+						{
+							"name": "filterOrder"
+						},
+						{
+							"name": "OrderProduct"
+						},
+						{
+							"name": "ProductOrderMonthly"
+						},
+						{
+							"name": "storeOrder"
+						},
+						{
+							"name": "StoreOrderMonthly"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          ORDER_ID as integer,",
+						"          ORDER_DATE as date,",
+						"          CUSTOMER_ID as integer,",
+						"          ORDER_STATUS as string,",
+						"          STORE_ID as integer,",
+						"          PRODUCT_ID as integer,",
+						"          UNIT_PRICE as double,",
+						"          QUANTITY as integer,",
+						"          SUBTOTAL as double,",
+						"          UPDATED_TIMESTAMP as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> structureOrder",
+						"source(output(",
+						"          PRODUCT_ID as integer,",
+						"          PRODUCT_NAME as string,",
+						"          UNIT_PRICE as double,",
+						"          UPDATED_TIMESTAMP as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> structuredProduct",
+						"source(output(",
+						"          STORE_ID as integer,",
+						"          STORE_NAME as string,",
+						"          LATITUDE as double,",
+						"          LONGITUDE as double,",
+						"          UPDATED_TIMESTAMP as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> StructuredStore",
+						"structureOrder derive(MONTHYEAR = toString(ORDER_DATE,'MM-yyyy')) ~> Monthyear",
+						"Monthyear filter(ORDER_STATUS != 'CANCELLED') ~> filterOrder",
+						"filterOrder, structuredProduct join(structureOrder@PRODUCT_ID == structuredProduct@PRODUCT_ID,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> OrderProduct",
+						"OrderProduct aggregate(groupBy(PRODUCT_NAME,",
+						"          MONTHYEAR,",
+						"          ORDER_STATUS),",
+						"     TOTAL_AMOUNT = round(sum(SUBTOTAL),2)) ~> ProductOrderMonthly",
+						"StructuredStore, filterOrder join(StructuredStore@STORE_ID == structureOrder@STORE_ID,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> storeOrder",
+						"storeOrder aggregate(groupBy(STORE_NAME,",
+						"          LATITUDE,",
+						"          LONGITUDE,",
+						"          ORDER_STATUS,",
+						"          MONTHYEAR),",
+						"     TOTAL_AMOUNT = round(sum(SUBTOTAL),2)) ~> StoreOrderMonthly",
+						"ProductOrderMonthly sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     partitionFileNames:['ds_product_order_monthly.csv'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> dsproductordermonthly",
+						"StoreOrderMonthly sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     partitionFileNames:['ds_store_order_monthly.csv'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> dsstoreordermonthly"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_struct_orders')]",
+				"[concat(variables('factoryId'), '/datasets/ds_struct_products')]",
+				"[concat(variables('factoryId'), '/datasets/ds_struct_stores')]",
+				"[concat(variables('factoryId'), '/datasets/ds_product_order_monthly')]",
+				"[concat(variables('factoryId'), '/datasets/ds_store_order_monthly')]"
 			]
 		}
 	]
