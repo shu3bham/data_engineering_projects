@@ -1,0 +1,45 @@
+{
+	"name": "ds_clean_ordered_item",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_dl_raw",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "2. Cleanse"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "ordered_item",
+				"fileSystem": "cleaned"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "ORDER_ID",
+				"type": "INT32"
+			},
+			{
+				"name": "PRODUCT_ID",
+				"type": "INT32"
+			},
+			{
+				"name": "UNIT_PRICE",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "QUANTITY",
+				"type": "INT32"
+			},
+			{
+				"name": "UPDATED_TIMESTAMP",
+				"type": "INT96"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,158 @@
+{
+	"name": "df_order_clean_to_structured",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_clean_orders",
+						"type": "DatasetReference"
+					},
+					"name": "CleanOrder"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_clean_ordered_item",
+						"type": "DatasetReference"
+					},
+					"name": "CleanOrderItem"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_clean_stores",
+						"type": "DatasetReference"
+					},
+					"name": "CleanStore"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_clean_products",
+						"type": "DatasetReference"
+					},
+					"name": "CleanProduct"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_struct_orders",
+						"type": "DatasetReference"
+					},
+					"name": "StructuredOrder"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_struct_stores",
+						"type": "DatasetReference"
+					},
+					"name": "StructuredStore"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_struct_products",
+						"type": "DatasetReference"
+					},
+					"name": "StructureProduct"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "derivedColumn3"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ORDER_ID as integer,",
+				"          ORDER_DATE as date,",
+				"          CUSTOMER_ID as integer,",
+				"          ORDER_STATUS as string,",
+				"          STORE_ID as integer,",
+				"          UPDATED_TIMESTAMP as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> CleanOrder",
+				"source(output(",
+				"          ORDER_ID as integer,",
+				"          PRODUCT_ID as integer,",
+				"          UNIT_PRICE as double,",
+				"          QUANTITY as integer,",
+				"          UPDATED_TIMESTAMP as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> CleanOrderItem",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> CleanStore",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> CleanProduct",
+				"CleanOrder, CleanOrderItem join(CleanOrder@ORDER_ID == CleanOrderItem@ORDER_ID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 derive(SUBTOTAL = UNIT_PRICE * QUANTITY,",
+				"          UPDATED_TIMESTAMP = currentUTC()) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          ORDER_ID = CleanOrder@ORDER_ID,",
+				"          ORDER_DATE,",
+				"          CUSTOMER_ID,",
+				"          ORDER_STATUS,",
+				"          STORE_ID,",
+				"          PRODUCT_ID,",
+				"          UNIT_PRICE,",
+				"          QUANTITY,",
+				"          SUBTOTAL,",
+				"          UPDATED_TIMESTAMP",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"CleanStore derive(UPDATED_TIMESTAMP = currentUTC()) ~> derivedColumn2",
+				"CleanProduct derive(UPDATED_TIMESTAMP = currentUTC()) ~> derivedColumn3",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> StructuredOrder",
+				"derivedColumn2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> StructuredStore",
+				"derivedColumn3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> StructureProduct"
+			]
+		}
+	}
+}

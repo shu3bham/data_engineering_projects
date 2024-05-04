@@ -1,0 +1,24 @@
+{
+	"name": "ds_raw_order",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_dl_raw",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "1. raw"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "orders.parquet",
+				"fileSystem": "raw"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
