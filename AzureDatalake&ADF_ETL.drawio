@@ -1,9 +1,51 @@
-<mxfile host="app.diagrams.net" modified="2024-05-04T08:52:06.926Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" version="24.3.1" etag="oFH2tIFOmOuem7Cghzmx" type="github">
+<mxfile host="app.diagrams.net" modified="2024-05-04T09:04:34.626Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="qS2kadBc_TQkyMTUBSZk" version="24.3.1" type="github">
   <diagram name="Page-1" id="KKIFclf39HiuzV0_iXLe">
-    <mxGraphModel>
+    <mxGraphModel dx="1118" dy="542" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="BZvetf0CSEoT3AZawgzG-1" value="" style="dashed=0;outlineConnect=0;html=1;align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;shape=mxgraph.weblogos.github" vertex="1" parent="1">
+          <mxGeometry x="30" y="200" width="75" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="BZvetf0CSEoT3AZawgzG-2" value="" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/databases/Data_Factory.svg;" vertex="1" parent="1">
+          <mxGeometry x="140" y="204" width="68" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="BZvetf0CSEoT3AZawgzG-3" value="" style="verticalLabelPosition=bottom;html=1;verticalAlign=top;align=center;strokeColor=none;fillColor=#00BEF2;shape=mxgraph.azure.storage_blob;" vertex="1" parent="1">
+          <mxGeometry x="250" y="230" width="50" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="BZvetf0CSEoT3AZawgzG-4" value="" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/databases/Data_Factory.svg;" vertex="1" parent="1">
+          <mxGeometry x="340" y="207" width="68" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="BZvetf0CSEoT3AZawgzG-5" value="" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/storage/Data_Lake_Storage_Gen1.svg;" vertex="1" parent="1">
+          <mxGeometry x="470" y="220" width="64" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="BZvetf0CSEoT3AZawgzG-6" value="" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/databases/Data_Factory.svg;" vertex="1" parent="1">
+          <mxGeometry x="600" y="212" width="68" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="BZvetf0CSEoT3AZawgzG-7" value="" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/storage/Data_Lake_Storage_Gen1.svg;" vertex="1" parent="1">
+          <mxGeometry x="730" y="223" width="64" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="BZvetf0CSEoT3AZawgzG-8" value="" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/databases/Data_Factory.svg;" vertex="1" parent="1">
+          <mxGeometry x="730" y="390" width="68" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="BZvetf0CSEoT3AZawgzG-9" value="" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/storage/Data_Lake_Storage_Gen1.svg;" vertex="1" parent="1">
+          <mxGeometry x="590" y="406" width="64" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="BZvetf0CSEoT3AZawgzG-10" value="" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/databases/Data_Factory.svg;" vertex="1" parent="1">
+          <mxGeometry x="408" y="398" width="68" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="BZvetf0CSEoT3AZawgzG-11" value="" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/storage/Data_Lake_Storage_Gen1.svg;" vertex="1" parent="1">
+          <mxGeometry x="243" y="414" width="64" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="BZvetf0CSEoT3AZawgzG-13" value="" style="image;sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/mscae/SQL_DataWarehouse.svg;" vertex="1" parent="1">
+          <mxGeometry x="250" y="536.85" width="50" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="BZvetf0CSEoT3AZawgzG-16" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://www.getdbt.com/ui/img/logos/dbt-logo.svg;" vertex="1" parent="1">
+          <mxGeometry x="30" y="530" width="110.23" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="BZvetf0CSEoT3AZawgzG-20" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://docs.snowflake.com/en/_images/logo-snowflake.png;" vertex="1" parent="1">
+          <mxGeometry x="40" y="428" width="125.87" height="30" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
