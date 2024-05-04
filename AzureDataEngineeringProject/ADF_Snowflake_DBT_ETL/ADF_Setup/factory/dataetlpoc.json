@@ -1,0 +1,9 @@
+{
+	"name": "dataetlpoc",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "6dc5c79d-375c-435b-ab31-e2ed4e50e57b",
+		"tenantId": "243bd71d-cef7-442d-b37f-3ff10a3e2832"
+	}
+}

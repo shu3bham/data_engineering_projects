@@ -1,0 +1,27 @@
+{
+	"name": "ds_raw_order_item",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_dl_raw",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "1. raw"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "ordered_item.txt",
+				"fileSystem": "raw"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
