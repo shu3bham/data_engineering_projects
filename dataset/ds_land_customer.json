@@ -1,0 +1,23 @@
+{
+	"name": "ds_land_customer",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "la_sl_landing",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "0. landing"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "customers.json",
+				"container": "pocetlpractice"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

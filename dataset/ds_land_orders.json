@@ -1,0 +1,24 @@
+{
+	"name": "ds_land_orders",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "la_sl_landing",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "0. landing"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "orders.parquet",
+				"container": "pocetlpractice"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

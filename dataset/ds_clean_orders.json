@@ -1,0 +1,24 @@
+{
+	"name": "ds_clean_orders",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_dl_raw",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "2. Cleanse"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "orders",
+				"fileSystem": "cleaned"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
